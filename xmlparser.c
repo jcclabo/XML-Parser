@@ -33,12 +33,6 @@ El* parse_file(char* file_path, callback* callback) {
         return NULL;
     }
 
-    *c = fgetc(stream);
-    if (*c == '<') {
-        callback("Error", "Duplicate < used in root element tag", file_path);
-        return NULL; // very much an edge case, however it could not be easily caught in another method. Thought about report_any_comments, but thats a no go.
-    }
-
     // XML declaration must be first if present
     if (*c == '?') {
         while (*c != '>') // ignore XML declaration tag
