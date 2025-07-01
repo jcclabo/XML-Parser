@@ -1,8 +1,13 @@
 #ifndef _XMLPARSER_
 #define _XMLPARSER_
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
 #include "element.h"
-// #includes helper.h for a faster string cat
+// element.h includes helper.h for faster string cat
 
 /**
  * @brief a callback for repporting information associated with parsing. The type of information is specified in the 1st parameter

@@ -1,8 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-
 #include "xmlparser.h"
 
 /**
@@ -33,6 +28,7 @@ El* parse_file(char* file_path, callback* callback) {
         return NULL;
     }
 
+    *c = fgetc(stream);
     // XML declaration must be first if present
     if (*c == '?') {
         while (*c != '>') // ignore XML declaration tag
@@ -72,13 +68,13 @@ El* parse_el(char* c, FILE* stream, char* path, callback* callback) {
     El* root = (El*)malloc(sizeof(El));
     if (root == NULL) {
         callback("Error", "Unable to allocate space for an element", root->path);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     root->name = (char*)malloc(sizeof(char) * MAX_NAME_SIZE);
     if (root->name == NULL) {
         callback("Error", "Unable to allocate space for an element's name", root->path);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     root->name[0] = '\0';
@@ -89,7 +85,7 @@ El* parse_el(char* c, FILE* stream, char* path, callback* callback) {
     root->value = malloc(sizeof(char) * MAX_VAL_SIZE);
     if (root->value == NULL) {
         callback("Error", "Unable to allocate space for an element's value", root->path);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     root->value[0] = '\0';
@@ -97,7 +93,7 @@ El* parse_el(char* c, FILE* stream, char* path, callback* callback) {
     root->path = (char*)malloc(sizeof(char) * MAX_PATH_SIZE);
     if (root->path == NULL) {
         callback("Error", "Unable to allocate space for an element's path", root->path);
-        return EXIT_FAILURE;
+        return NULL;
     }
 
     root->path[0] = '\0';

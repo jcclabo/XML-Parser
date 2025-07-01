@@ -1,6 +1,10 @@
 #ifndef _ELEMENT_
 #define _ELEMENT_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "helper.h"
 
 #define MAX_NAME_SIZE 256
