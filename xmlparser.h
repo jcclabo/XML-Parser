@@ -21,7 +21,7 @@ char parse_entity(char*, FILE*, char*, callback*);
 
 char* parse_comment(char*, char* comment, FILE*, char*, callback*);
 
-int report_if_comment(char*, FILE*, char*, callback*);
+int report_comment(char*, FILE*, char*, callback*);
 
 int report_any_comments(char*, FILE*, char*, callback*);
 
