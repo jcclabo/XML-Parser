@@ -646,62 +646,26 @@ int no_op_callback(char* infotype, char* value, char* path) {
 // returns an unescaped entity, or EXIT_FAILURE on error
 char parse_entity(char* c, FILE* stream, char* path, callback* callback) {
     // *c == '&'
-    *c = fgetc(stream);
+    char buffer[9]; // large enough for known entities (&quot;)
+    int i = 0;
 
-    if (*c == 'l') {             // &lt;
-        *c = fgetc(stream);
-        if (*c == 't') { 
-            *c = fgetc(stream);
-            if (*c == ';') {
-                return '<';     // <
-            }
-        }
-    } else if (*c =='g') {       // &gt;
-        *c = fgetc(stream);
-        if (*c == 't') { 
-            *c = fgetc(stream);
-            if (*c == ';') {
-                return '>';     // >
-            }
-        }
-    } else if (*c == 'q') {              // &quot;
-        *c = fgetc(stream);
-        if (*c == 'u') { 
-            *c = fgetc(stream);
-            if (*c == 'o') {
-                *c = fgetc(stream);
-                if (*c == 't') { 
-                    *c = fgetc(stream);
-                    if (*c == ';') {
-                        return '\"';    // "
-                    }
-                }
-            }
-        }
-    } else if (*c == 'a') {              // &apos;
-        *c = fgetc(stream);
-        if (*c == 'p') { 
-            *c = fgetc(stream);
-            if (*c == 'o') {
-                *c = fgetc(stream);
-                if (*c == 's') { 
-                    *c = fgetc(stream);
-                    if (*c == ';') {
-                        return '\'';    // '
-                    }
-                }
-            }   
-        } else if (*c == 'm') {      // &amp;
-            *c = fgetc(stream);
-            if (*c == 'p') { 
-                *c = fgetc(stream);
-                if (*c == ';') {
-                    return '&';     // &
-                }
-            }
-        }
+    while ((*c = fgetc(stream)) && *c != ';' && i < (int)sizeof(buffer) - 1) {
+        buffer[i++] = *c;
     }
-    callback("Error", "Unescaped entity \"&\"", path);
+
+    if (*c != ';') {
+        callback("Error", "Unescaped entity \"&\"", path);
+        return EXIT_FAILURE;
+    }
+    buffer[i] = '\0';
+
+    if      (strcmp(buffer, "lt")   == 0) return '<';
+    else if (strcmp(buffer, "gt")   == 0) return '>';
+    else if (strcmp(buffer, "quot") == 0) return '"';
+    else if (strcmp(buffer, "apos") == 0) return '\'';
+    else if (strcmp(buffer, "amp")  == 0) return '&';
+
+    callback("Error", "Unknown entity", path);
     return EXIT_FAILURE;
-} // end parse_entity
+}
 
